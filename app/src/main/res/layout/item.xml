@@ -26,7 +26,6 @@
         android:orientation="vertical">
 
 
-
         <RelativeLayout
             android:id="@+id/e"
             android:layout_width="wrap_content"
@@ -49,13 +48,13 @@
 
             <ImageButton
                 android:id="@+id/ib"
-                android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_toStartOf="@+id/s"
                 android:background="@android:color/transparent"
-                android:src="@drawable/lock" />
+                android:src="@drawable/lock"
+                android:visibility="invisible" />
 
         </RelativeLayout>
 

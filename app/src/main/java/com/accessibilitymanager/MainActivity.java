@@ -24,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -225,7 +226,7 @@ public class MainActivity extends Activity {
     }
 
 
-    //这个是用于适配列表中的每一项设置项的显示的
+    //这个是用于适配列表中的每一项设置项的显示
     public class adapter extends BaseAdapter {
         private final List<AccessibilityServiceInfo> list;
         private final Context mContext;
@@ -272,14 +273,12 @@ public class MainActivity extends Activity {
             String ServiceName = info.getId();
             String[] Packagename = Pattern.compile("/").split(ServiceName);
             Drawable icon = null;
-            ApplicationInfo applicationInfo;
             String Packagelabel = null;
             String ServiceLabel = null;
             String Description = null;
             try {
-                applicationInfo = pm.getApplicationInfo(Packagename[0], PackageManager.GET_META_DATA);
                 icon = pm.getApplicationIcon(Packagename[0]);
-                Packagelabel = (String) pm.getApplicationLabel(applicationInfo);
+                Packagelabel = String.valueOf(pm.getApplicationLabel(pm.getApplicationInfo(Packagename[0], PackageManager.GET_META_DATA)));
                 ServiceLabel = pm.getServiceInfo(new ComponentName(Packagename[0], Packagename[0] + Packagename[1]), PackageManager.MATCH_DEFAULT_ONLY).loadLabel(pm).toString();
                 Description = info.loadDescription(pm);
             } catch (PackageManager.NameNotFoundException ignored) {
@@ -300,7 +299,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(View view) {
                     if (!checkPermission(mContext)) {
-                        Toast.makeText(mContext, "无权限", Toast.LENGTH_SHORT).show();
+                        createPermissionDialog();
                         return;
                     }
                     b[0] = !b[0];
@@ -320,42 +319,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(View view) {
                     if (!checkPermission(mContext)) {
-                        new AlertDialog.Builder(mContext)
-                                .setMessage("安卓5.1和更低版本的设备，需将本APP转换为系统应用。\n\n安卓6.0及更高版本的设备，在下面三个方法中任选一个均可：\n1.连接电脑USB调试后在电脑CMD执行以下命令：\nadb shell pm grant com.accessibilitymanager android.permission.WRITE_SECURE_SETTINGS\n\n2.root激活。\n\n3.Shizuku激活。")
-                                .setTitle("需要安全设置写入权限")
-                                .setPositiveButton("复制命令", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        ((ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("c", "adb shell pm grant com.accessibilitymanager android.permission.WRITE_SECURE_SETTINGS"));
-                                        Toast.makeText(mContext, "命令已复制到剪切板", Toast.LENGTH_SHORT).show();
-                                    }
-                                })
-                                .setNegativeButton("root激活", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialoginterface, int i) {
-                                        Process p;
-                                        try {
-                                            p = Runtime.getRuntime().exec("su");
-                                            DataOutputStream o = new DataOutputStream(p.getOutputStream());
-                                            o.writeBytes("pm grant com.accessibilitymanager android.permission.WRITE_SECURE_SETTINGS\nexit\n");
-                                            o.flush();
-                                            o.close();
-                                            p.waitFor();
-                                            if (p.exitValue() == 0) {
-                                                Toast.makeText(mContext, "成功激活", Toast.LENGTH_SHORT).show();
-                                            }
-                                        } catch (IOException | InterruptedException ignored) {
-                                            Toast.makeText(mContext, "激活失败", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                })
-                                .setNeutralButton("Shizuku激活", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) check();
-                                    }
-                                })
-                                .create().show();
+                        createPermissionDialog();
                         holder.sw.setChecked(!holder.sw.isChecked());
                     } else {
 
@@ -374,73 +338,77 @@ public class MainActivity extends Activity {
                 }
             });
 
+
+            //点击某个项目的空白处将展示该服务的详细信息，下面的代码是解析各类FLAG的，挺麻烦，不过没别的方法。
             holder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     int fb = info.feedbackType;
                     String feedback = "";
-                    if (fb == -1) feedback = "所有反馈\n";
-                    else if (fb % 64 >= 32) feedback += "盲文反馈\n";
-                    else if (fb % 32 >= 16) feedback += "通用反馈\n";
-                    else if (fb % 16 >= 8) feedback += "视觉反馈\n";
-                    else if (fb % 8 >= 4) feedback += "可听（未说出）反馈\n";
-                    else if (fb % 4 >= 2) feedback += "触觉反馈\n";
-                    else if (fb % 2 >= 1) feedback += "口头反馈\n";
-                    else feedback = "无\n";
+                    if (fb == -1) fb = 127;
+                    if (fb % 64 >= 32) feedback += "盲文反馈\n";
+                    if (fb % 32 >= 16) feedback += "通用反馈\n";
+                    if (fb % 16 >= 8) feedback += "视觉反馈\n";
+                    if (fb % 8 >= 4) feedback += "可听（未说出）反馈\n";
+                    if (fb % 4 >= 2) feedback += "触觉反馈\n";
+                    if (fb % 2 >= 1) feedback += "口头反馈\n";
+                    if (feedback.equals("")) feedback = "无\n";
 
 
                     int cap = info.getCapabilities();
                     String capa = "";
+                    if (cap == -1) cap = 127;
                     if (cap % 64 >= 32) capa += "执行手势\n";
-                    else if (cap % 32 >= 16) capa += "控制显示器放大率\n";
-                    else if (cap % 16 >= 8) capa += "监听和拦截按键事件\n";
-                    else if (cap % 8 >= 4) capa += "请求增强的Web辅助功能增强功能。 例如，安装脚本以使网页内容更易于访问\n";
-                    else if (cap % 4 >= 2) capa += "请求触摸探索模式（类似于把触屏操作变成鼠标操作）\n";
-                    else if (cap % 2 >= 1) capa += "读取屏幕内容\n";
-                    else capa = "无\n";
+                    if (cap % 32 >= 16) capa += "控制显示器放大率\n";
+                    if (cap % 16 >= 8) capa += "监听和拦截按键事件\n";
+                    if (cap % 8 >= 4) capa += "请求增强的Web辅助功能增强功能。 例如，安装脚本以使网页内容更易于访问\n";
+                    if (cap % 4 >= 2) capa += "请求触摸探索模式，使触屏操作变成鼠标操作\n";
+                    if (cap % 2 >= 1) capa += "读取屏幕内容\n";
+                    if (capa.equals("")) capa = "无\n";
 
                     int eve = info.eventTypes;
                     String event = "";
+                    if (eve == -1) eve = 45108863;
                     if (eve % 22554432 >= 16777216) event += "当前正在阅读用户屏幕上下文的助理事件\n";
-                    else if (eve % 16777216 >= 8388608) event += "点击控件上下文的事件\n";
-                    else if (eve % 8388608 >= 4194304) event += "窗口更改的事件\n";
-                    else if (eve % 4194304 >= 2097152) event += "用户结束触摸屏幕的事件\n";
-                    else if (eve % 2097152 >= 1048576) event += "用户开始触摸屏幕的事件\n";
-                    else if (eve % 1048576 >= 524288) event += "结束手势检测的事件\n";
-                    else if (eve % 524288 >= 262144) event += "开始手势检测事件\n";
-                    else if (eve % 262144 >= 131072) event += "遍历视图文本事件\n";
-                    else if (eve % 131072 >= 65536) event += "清除可访问性焦点事件\n";
-                    else if (eve % 65536 >= 32768) event += "获得可访问性焦点的事件\n";
-                    else if (eve % 32768 >= 16384) event += "发布公告的应用程序的事件\n";
-                    else if (eve % 16384 >= 8192) event += "更改选中文本的事件\n";
-                    else if (eve % 8192 >= 4096) event += "滚动视图的事件\n";
-                    else if (eve % 4096 >= 2048) event += "窗口内容更改的事件\n";
-                    else if (eve % 2048 >= 1024) event += "结束触摸探索手势的事件\n";
-                    else if (eve % 1024 >= 512) event += "开始触摸探索手势的事件\n";
-                    else if (eve % 512 >= 256) event += "控件结束文字输入事件\n";
-                    else if (eve % 256 >= 128) event += "控件接受文字输入事件\n";
-                    else if (eve % 128 >= 64) event += "通知状态改变的事件\n";
-                    else if (eve % 64 >= 32) event += "窗口状态更改的事件\n";
-                    else if (eve % 32 >= 16) event += "文本框的文字改变事件\n";
-                    else if (eve % 16 >= 8) event += "控件获得焦点的事件\n";
-                    else if (eve % 8 >= 4) event += "控件被选取的事件\n";
-                    else if (eve % 4 >= 2) event += "长按控件的事件\n";
-                    else if (eve % 2 >= 1) event += "点击控件的事件\n";
-                    else event = "无\n";
+                    if (eve % 16777216 >= 8388608) event += "点击控件上下文的事件\n";
+                    if (eve % 8388608 >= 4194304) event += "窗口更改的事件\n";
+                    if (eve % 4194304 >= 2097152) event += "用户结束触摸屏幕的事件\n";
+                    if (eve % 2097152 >= 1048576) event += "用户开始触摸屏幕的事件\n";
+                    if (eve % 1048576 >= 524288) event += "结束手势检测的事件\n";
+                    if (eve % 524288 >= 262144) event += "开始手势检测事件\n";
+                    if (eve % 262144 >= 131072) event += "遍历视图文本事件\n";
+                    if (eve % 131072 >= 65536) event += "清除可访问性焦点事件\n";
+                    if (eve % 65536 >= 32768) event += "获得可访问性焦点的事件\n";
+                    if (eve % 32768 >= 16384) event += "发布公告的应用程序的事件\n";
+                    if (eve % 16384 >= 8192) event += "更改选中文本的事件\n";
+                    if (eve % 8192 >= 4096) event += "滚动视图的事件\n";
+                    if (eve % 4096 >= 2048) event += "窗口内容更改的事件\n";
+                    if (eve % 2048 >= 1024) event += "结束触摸探索手势的事件\n";
+                    if (eve % 1024 >= 512) event += "开始触摸探索手势的事件\n";
+                    if (eve % 512 >= 256) event += "控件结束文字输入事件\n";
+                    if (eve % 256 >= 128) event += "控件接受文字输入事件\n";
+                    if (eve % 128 >= 64) event += "通知状态改变的事件\n";
+                    if (eve % 64 >= 32) event += "窗口状态更改的事件\n";
+                    if (eve % 32 >= 16) event += "文本框的文字改变事件\n";
+                    if (eve % 16 >= 8) event += "控件获得焦点的事件\n";
+                    if (eve % 8 >= 4) event += "控件被选取的事件\n";
+                    if (eve % 4 >= 2) event += "长按控件的事件\n";
+                    if (eve % 2 >= 1) event += "点击控件的事件\n";
+                    if (event.equals("")) event = "无\n";
 
-                    String range = info.packageNames == null ? "全局生效" : "仅对以下APP生效：" + Arrays.toString(info.packageNames);
+                    String range = info.packageNames == null ? "全局生效" : Arrays.toString(info.packageNames).replace("[", "").replace("]", "").replace(", ", "\n").replace(",", "\n");
 
                     int fg = info.flags;
                     String flag = "";
                     if (fg % 128 >= 64) flag += "访问所有交互式窗口的内容\n";
-                    else if (fg % 64 >= 32) flag += "监听和拦截按键事件\n";
-                    else if (fg % 32 >= 16) flag += "获取屏幕视图上所有控件的ID\n";
-                    else if (fg % 16 >= 8) flag += "启用Web可访问性增强扩展\n";
-                    else if (fg % 8 >= 4) flag += "要求系统进入触摸探索模式\n";
-                    else if (fg % 4 >= 2) flag += "查询窗口中的不重要内容\n";
-                    else if (fg % 2 >= 1) flag += "默认\n";
-                    else flag = "无\n";
+                    if (fg % 64 >= 32) flag += "监听和拦截按键事件\n";
+                    if (fg % 32 >= 16) flag += "获取屏幕视图上所有控件的ID\n";
+                    if (fg % 16 >= 8) flag += "启用Web可访问性增强扩展\n";
+                    if (fg % 8 >= 4) flag += "要求系统进入触摸探索模式\n";
+                    if (fg % 4 >= 2) flag += "查询窗口中的不重要内容\n";
+                    if (fg % 2 >= 1) flag += "默认\n";
+                    if (flag.equals("")) flag = "无\n";
 
 
                     try {
@@ -451,7 +419,18 @@ public class MainActivity extends Activity {
                         t.setTextSize(18f);
                         t.setAlpha(0.8f);
                         t.setTextColor(night ? Color.WHITE : Color.BLACK);
-                        t.setText("服务类名：\n" + ServiceName + "\n\n能力：\n" + capa + "\n生效范围：\n" + range + "\n\n反馈方式：\n" + feedback + "\n捕获事件类型：\n" + event + "\n特殊标志：\n" + flag);
+                        t.setText("服务类名：\n" + ServiceName + "\n\n特殊能力：\n" + capa + "\n生效范围：\n" + range + "\n\n反馈方式：\n" + feedback + "\n捕获事件类型：\n" + event + "\n特殊标志：\n" + flag);
+                        if (info.getSettingsActivityName() != null && info.getSettingsActivityName().length() > 0)
+                            builder.setNegativeButton("设置", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    try {
+                                        mContext.startActivity(new Intent().setComponent(new ComponentName(Packagename[0], info.getSettingsActivityName())));
+                                    } catch (Exception ignored) {
+                                    }
+                                }
+                            });
+
                         builder
                                 .setIcon(pm.getApplicationIcon(Packagename[0]))
                                 .setView(t).setTitle("服务详细信息")
@@ -464,6 +443,45 @@ public class MainActivity extends Activity {
             return convertView;
         }
 
+        private void createPermissionDialog() {
+            new AlertDialog.Builder(mContext)
+                    .setMessage("安卓5.1和更低版本的设备，需将本APP转换为系统应用。\n\n安卓6.0及更高版本的设备，在下面三个方法中任选一个均可：\n1.连接电脑USB调试后在电脑CMD执行以下命令：\nadb shell pm grant com.accessibilitymanager android.permission.WRITE_SECURE_SETTINGS\n\n2.root激活。\n\n3.Shizuku激活。")
+                    .setTitle("需要安全设置写入权限")
+                    .setPositiveButton("复制命令", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ((ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("c", "adb shell pm grant com.accessibilitymanager android.permission.WRITE_SECURE_SETTINGS"));
+                            Toast.makeText(mContext, "命令已复制到剪切板", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton("root激活", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialoginterface, int i) {
+                            Process p;
+                            try {
+                                p = Runtime.getRuntime().exec("su");
+                                DataOutputStream o = new DataOutputStream(p.getOutputStream());
+                                o.writeBytes("pm grant com.accessibilitymanager android.permission.WRITE_SECURE_SETTINGS\nexit\n");
+                                o.flush();
+                                o.close();
+                                p.waitFor();
+                                if (p.exitValue() == 0) {
+                                    Toast.makeText(mContext, "成功激活", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (IOException | InterruptedException ignored) {
+                                Toast.makeText(mContext, "激活失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+                    .setNeutralButton("Shizuku激活", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) check();
+                        }
+                    })
+                    .create().show();
+        }
+
         class ViewHolder {
             TextView texta;
             TextView textb;
@@ -474,6 +492,7 @@ public class MainActivity extends Activity {
         }
 
 
+        //用于读取锁定状态。
         void getDaemon() {
             if (sp == null)
                 sp = mContext.getSharedPreferences("data", 0);
@@ -482,6 +501,7 @@ public class MainActivity extends Activity {
         }
 
 
+        //查看APP是否可以写入安全设置
         boolean checkPermission(Context context) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -498,6 +518,7 @@ public class MainActivity extends Activity {
         }
 
 
+        //启动前台服务，进行保活!
         void StartForeGroundDaemon() {
             if (!checkPermission(mContext)) return;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
