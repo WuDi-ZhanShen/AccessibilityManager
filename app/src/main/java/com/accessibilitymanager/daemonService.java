@@ -1,10 +1,12 @@
 package com.accessibilitymanager;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.ContentObserver;
@@ -13,10 +15,14 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class daemonService extends Service {
@@ -26,23 +32,19 @@ public class daemonService extends Service {
     Notification.Builder notification;
     NotificationManager systemService;
     String tmpsettingValue;
-
+    List<String> l;
 
     //自定义一个内容监视器
     class SettingsValueChangeContentObserver extends ContentObserver {
-
         public SettingsValueChangeContentObserver() {
             super(new Handler());
         }
-
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
-
             String s = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
             //如果这俩相等，说明本次变动是APP自己改的。于是就不需要做处理。
             if (tmpsettingValue.equals(s)) return;
-
             doDaemon(s);
         }
     }
@@ -56,7 +58,7 @@ public class daemonService extends Service {
         String[] Packagename = Pattern.compile(":").split(list);
         StringBuilder add = new StringBuilder();
         for (String i : Packagename) {
-            if (i == null || i.equals("null") || i.length() == 0 || s.contains(i)) continue;
+            if (i == null || i.equals("null") || i.length() == 0 || s.contains(i) || !l.contains(i)) continue;
             add.append(i).append(":");
             Toast.makeText(daemonService.this, "保活" + i, Toast.LENGTH_SHORT).show();
         }
@@ -64,11 +66,10 @@ public class daemonService extends Service {
         if (add1.length() > 0) {
             tmpsettingValue = add1 +s;
             Settings.Secure.putString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, tmpsettingValue);
-            notification.setContentText(add1.replace(":", "\n") + new SimpleDateFormat("时间：H时m分ss秒").format(Calendar.getInstance().getTime())).setContentTitle("已保活以下无障碍服务：");
+            notification.setContentText(add1.replace(":", "\n") + new SimpleDateFormat("时间：H:mm ss秒", Locale.getDefault()).format(Calendar.getInstance().getTime())).setContentTitle("已保活以下无障碍服务：");
             systemService.notify(1, notification.build());
         }
     }
-
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -79,15 +80,15 @@ public class daemonService extends Service {
     public void onCreate() {
         super.onCreate();
         Toast.makeText(daemonService.this, "启动保活", Toast.LENGTH_SHORT).show();
-
-
+        List<AccessibilityServiceInfo> list = ((AccessibilityManager) getApplicationContext().getSystemService(Context.ACCESSIBILITY_SERVICE)).getInstalledAccessibilityServiceList();
+        l = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            l.add(list.get(i).getId());
+        }
         //注册监视器，读取当前设置项并存到tmpsettingValue
         mContentOb = new SettingsValueChangeContentObserver();
         getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, mContentOb);
         tmpsettingValue =  Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-
-
-
 
         //发送前台通知
         notification = new Notification.Builder(getApplication()).setAutoCancel(true).
@@ -97,8 +98,7 @@ public class daemonService extends Service {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             notification.setSmallIcon(Icon.createWithResource(this, R.drawable.icon)).
-                    setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_IMMUTABLE))
-            ;
+                    setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_IMMUTABLE));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel("daemon", "daemon", NotificationManager.IMPORTANCE_DEFAULT);

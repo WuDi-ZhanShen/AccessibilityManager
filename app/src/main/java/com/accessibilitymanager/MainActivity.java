@@ -24,8 +24,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -42,8 +43,13 @@ import android.widget.Toast;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import rikka.shizuku.Shizuku;
@@ -51,11 +57,12 @@ import rikka.shizuku.Shizuku;
 public class MainActivity extends Activity {
 
     private SettingsValueChangeContentObserver mContentOb;
-    List<AccessibilityServiceInfo> l;
+    List<AccessibilityServiceInfo> l, tmp;
     ListView t;
+    SharedPreferences sp;
     String settingValue, tmpsettingValue;
     boolean night = true;
-
+    PackageManager pm;
 
     //自定义一个内容监视器
     class SettingsValueChangeContentObserver extends ContentObserver {
@@ -66,14 +73,22 @@ public class MainActivity extends Activity {
         @Override
         public void onChange(boolean selfChange) {
             super.onChange(selfChange);
-
             //更新settingValue，并与APP内的tmpsettingValue作比对。如果不同，则说明本次设置项改变来自APP外部，于是刷新一下主界面的列表。相同则说明这次改变就是本APP改的，无需处理。
             settingValue = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
             if (settingValue == null) settingValue = " ";
             if (!settingValue.equals(tmpsettingValue))
-                t.setAdapter(new adapter(MainActivity.this, l));
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                t.setAdapter(new adapter(MainActivity.this, tmp, sp.getString("daemon", " "), pm));
+                            }
+                        });
+                    }
+                }).start();
         }
-
     }
 
 
@@ -96,18 +111,21 @@ public class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             window.setNavigationBarColor(Color.TRANSPARENT);
 
-        //申请取消电池优化，并且注册shizuku授权结果监听器
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        //注册shizuku授权结果监听器
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             Shizuku.addRequestPermissionResultListener(RL);
-            startActivity(new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getPackageName())));
-        }
 
+
+        pm = getPackageManager();
         //注册设置项改变的监听器，用于实时更新APP内显示的各个无障碍服务的状态
         mContentOb = new SettingsValueChangeContentObserver();
         getContentResolver().registerContentObserver(Settings.Secure.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), true, mContentOb);
 
         //获取本机安装的无障碍服务列表，包括开启的和未开启的都有
         l = ((AccessibilityManager) getApplicationContext().getSystemService(Context.ACCESSIBILITY_SERVICE)).getInstalledAccessibilityServiceList();
+        Sort(0);
+
+
         t = findViewById(R.id.list);
 
 
@@ -116,12 +134,44 @@ public class MainActivity extends Activity {
         if (settingValue == null) settingValue = " ";
         tmpsettingValue = settingValue;
 
-        //如果设备一次都没打开过无障碍设置界面，则下面这个设置项值不存在，同时本APP是无法获取到无障碍设置列表的。所以要在这里加个判断，如果从来没开启过，则需要本APP来给这个设置项写入1来开启。
-        if (Settings.Secure.getString(getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED) != null)
-            t.setAdapter(new adapter(this, l));
-        else {
-            new AlertDialog.Builder(this).setMessage("您的设备尚未启用无障碍服务功能。您可以选择在系统设置-无障碍-打开或关闭任意服务项来激活系统的无障碍服务功能，也可以授权本APP安全设置写入权限以解决.")
 
+        //初次使用触发
+        sp = getSharedPreferences("data", 0);
+        if (sp.getBoolean("first", true)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("隐私政策")
+                    .setMessage("本应用不会收集或记录您的任何信息，也不包含任何联网功能。继续使用则代表您同意上述隐私政策。")
+                    .setPositiveButton("OK", null).create().show();
+            sp.edit().putBoolean("first", false).apply();
+        }
+
+
+        //如果设备一次都没打开过无障碍设置界面，则下面这个设置项值不存在，同时本APP是无法获取到无障碍设置列表的。所以要在这里加个判断，如果从来没开启过，则需要本APP来给这个设置项写入1来开启。
+        if (Settings.Secure.getString(getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED) != null) {
+            String daemon = sp.getString("daemon", " ");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            t.setAdapter(new adapter(MainActivity.this, tmp, daemon, pm));
+                        }
+                    });
+                }
+            }).start();
+
+            for (int i = 0; i < l.size(); i++) {
+                AccessibilityServiceInfo info = l.get(i);
+                if (daemon.contains(info.getId()))
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        startForegroundService(new Intent(this, daemonService.class));
+                    else
+                        startService(new Intent(this, daemonService.class));
+            }
+
+        } else {
+            new AlertDialog.Builder(this).setMessage("您的设备尚未启用无障碍服务功能。您可以选择在系统设置-无障碍-打开或关闭任意服务项来激活系统的无障碍服务功能，也可以授权本APP安全设置写入权限以解决.")
                     .setNegativeButton("root激活", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -160,8 +210,31 @@ public class MainActivity extends Activity {
             } catch (Exception ignored) {
             }
         }
+    }
 
+    private void Sort(int i) {
+        tmp = new ArrayList<>(l);
+        if (i != 0)
+            Collections.sort(tmp, new Comparator<AccessibilityServiceInfo>() {
+                @Override
+                public int compare(AccessibilityServiceInfo info1, AccessibilityServiceInfo info2) {
+                    Collator collator = Collator.getInstance(Locale.CHINA);
+                    String Packagelabel1;
+                    String ServiceName1 = info1.getId();
+                    String[] Packagename1 = Pattern.compile("/").split(ServiceName1);
+                    String Packagelabel2;
+                    String ServiceName2 = info2.getId();
+                    String[] Packagename2 = Pattern.compile("/").split(ServiceName2);
+                    try {
+                        Packagelabel1 = String.valueOf(pm.getApplicationLabel(pm.getApplicationInfo(Packagename1[0], PackageManager.GET_META_DATA)));
+                        Packagelabel2 = String.valueOf(pm.getApplicationLabel(pm.getApplicationInfo(Packagename2[0], PackageManager.GET_META_DATA)));
+                        return (i == 1) ? collator.compare(Packagelabel1, Packagelabel2) : collator.compare(Packagelabel2, Packagelabel1);
+                    } catch (PackageManager.NameNotFoundException ignored) {
 
+                    }
+                    return 0;
+                }
+            });
     }
 
 
@@ -225,20 +298,54 @@ public class MainActivity extends Activity {
         super.onDestroy();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.arrange, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int i, MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.moren:
+                Sort(0);
+                break;
+            case R.id.up:
+                Sort(1);
+                break;
+            case R.id.down:
+                Sort(-1);
+                break;
+
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        t.setAdapter(new adapter(MainActivity.this, tmp, sp.getString("daemon", " "), pm));
+                    }
+                });
+            }
+        }).start();
+        return super.onMenuItemSelected(i, menuItem);
+    }
 
     //这个是用于适配列表中的每一项设置项的显示
     public class adapter extends BaseAdapter {
         private final List<AccessibilityServiceInfo> list;
         private final Context mContext;
-
+        PackageManager pm;
         boolean perm = false;
-        SharedPreferences sp;
-        String daemon = null;
+        String daemon;
 
-        public adapter(Context mContext, List<AccessibilityServiceInfo> list) {
+        public adapter(Context mContext, List<AccessibilityServiceInfo> list, String daemon, PackageManager pm) {
             super();
             this.mContext = mContext;
             this.list = list;
+            this.daemon = daemon;
+            this.pm = pm;
         }
 
         public int getCount() {
@@ -268,7 +375,6 @@ public class MainActivity extends Activity {
             holder.sw = convertView.findViewById(R.id.s);
             holder.ib = convertView.findViewById(R.id.ib);
             convertView.setTag(holder);
-            PackageManager pm = mContext.getPackageManager();
             AccessibilityServiceInfo info = list.get(position);
             String ServiceName = info.getId();
             String[] Packagename = Pattern.compile("/").split(ServiceName);
@@ -287,38 +393,30 @@ public class MainActivity extends Activity {
             holder.imageView.setImageDrawable(icon);
             holder.textb.setText(Packagelabel.equals(ServiceLabel) ? ServiceLabel : String.format("%s/%s", Packagelabel, ServiceLabel));
             holder.texta.setText(Description == null || Description.length() == 0 ? "该服务没有描述" : Description);
-            getDaemon();
-            final boolean[] b = {daemon.contains(Packagename[0] + "/" + Packagename[1])};
 
-            holder.ib.setImageResource(b[0] ? R.drawable.lock1 : R.drawable.lock);
-            if (b[0]) {
-                StartForeGroundDaemon();
-            }
-            holder.sw.setEnabled(!b[0]);
+
+            holder.ib.setImageResource(daemon.contains(ServiceName) ? R.drawable.lock1 : R.drawable.lock);
+            holder.sw.setEnabled(!daemon.contains(ServiceName));
             holder.ib.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!checkPermission(mContext)) {
+                    if (checkPermission(mContext)) {
                         createPermissionDialog();
                         return;
                     }
-                    b[0] = !b[0];
-                    holder.ib.setImageResource(b[0] ? R.drawable.lock1 : R.drawable.lock);
-                    holder.sw.setEnabled(!b[0]);
+                    daemon = daemon.contains(ServiceName) ? sp.getString("daemon", null).replace(ServiceName + ":", "") : ServiceName + ":" + sp.getString("daemon", "");
+                    sp.edit().putString("daemon", daemon).apply();
+                    holder.ib.setImageResource(daemon.contains(ServiceName) ? R.drawable.lock1 : R.drawable.lock);
+                    holder.sw.setEnabled(!daemon.contains(ServiceName));
                     StartForeGroundDaemon();
-                    if (b[0])
-                        sp.edit().putString("daemon", ServiceName + ":" + sp.getString("daemon", "")).apply();
-                    else
-                        sp.edit().putString("daemon", sp.getString("daemon", null).replace(ServiceName + ":", "")).apply();
                 }
             });
-            if (settingValue.contains(Packagename[0] + "/" + Packagename[1]) || settingValue.contains(Packagename[0] + "/" + Packagename[0] + Packagename[1]))
-                holder.sw.setChecked(true);
+            holder.sw.setChecked(settingValue.contains(Packagename[0] + "/" + Packagename[1]) || settingValue.contains(Packagename[0] + "/" + Packagename[0] + Packagename[1]));
             holder.ib.setVisibility(holder.sw.isChecked() ? View.VISIBLE : View.INVISIBLE);
             holder.sw.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!checkPermission(mContext)) {
+                    if (checkPermission(mContext)) {
                         createPermissionDialog();
                         holder.sw.setChecked(!holder.sw.isChecked());
                     } else {
@@ -419,7 +517,7 @@ public class MainActivity extends Activity {
                         t.setTextSize(18f);
                         t.setAlpha(0.8f);
                         t.setTextColor(night ? Color.WHITE : Color.BLACK);
-                        t.setText("服务类名：\n" + ServiceName + "\n\n特殊能力：\n" + capa + "\n生效范围：\n" + range + "\n\n反馈方式：\n" + feedback + "\n捕获事件类型：\n" + event + "\n特殊标志：\n" + flag);
+                        t.setText(String.format("服务类名：\n%s\n\n特殊能力：\n%s\n生效范围：\n%s\n\n反馈方式：\n%s\n捕获事件类型：\n%s\n特殊标志：\n%s", ServiceName, capa, range, feedback, event, flag));
                         if (info.getSettingsActivityName() != null && info.getSettingsActivityName().length() > 0)
                             builder.setNegativeButton("设置", new DialogInterface.OnClickListener() {
                                 @Override
@@ -483,21 +581,13 @@ public class MainActivity extends Activity {
         }
 
         class ViewHolder {
+
             TextView texta;
             TextView textb;
             ImageView imageView;
             RelativeLayout layout;
             Switch sw;
             ImageButton ib;
-        }
-
-
-        //用于读取锁定状态。
-        void getDaemon() {
-            if (sp == null)
-                sp = mContext.getSharedPreferences("data", 0);
-            if (daemon == null)
-                daemon = sp.getString("daemon", " ");
         }
 
 
@@ -514,13 +604,19 @@ public class MainActivity extends Activity {
                 }
                 perm = (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
             }
-            return perm;
+            return !perm;
         }
 
 
         //启动前台服务，进行保活!
         void StartForeGroundDaemon() {
-            if (!checkPermission(mContext)) return;
+
+            if (checkPermission(mContext)) return;
+
+            //申请取消电池优化
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                startActivity(new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getPackageName())));
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mContext.startForegroundService(new Intent(mContext, daemonService.class));
             } else {
