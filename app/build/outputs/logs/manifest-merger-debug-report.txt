@@ -1,0 +1,140 @@
+-- Merging decision tree log ---
+provider#rikka.shizuku.ShizukuProvider
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:32:9-38:82
+	android:enabled
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:35:13-35
+	android:authorities
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:34:13-59
+	android:multiprocess
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:37:13-41
+	android:exported
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:36:13-36
+	android:permission
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:38:13-79
+	android:name
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:33:13-57
+manifest
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:2:1-41:12
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:2:1-41:12
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:2:1-41:12
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:2:1-41:12
+MERGED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:2:1-18:12
+MERGED from [dev.rikka.shizuku:api:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\758c3af0adbd3cec05836aa168ce8adf\transformed\jetified-api-12.2.0\AndroidManifest.xml:2:1-9:12
+MERGED from [dev.rikka.shizuku:shared:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\c7871e676a70c0dca4c59d93d7c6d8a8\transformed\jetified-shared-12.2.0\AndroidManifest.xml:2:1-9:12
+MERGED from [dev.rikka.shizuku:aidl:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\1b91acf7c853c92e2399f4377e8cab87\transformed\jetified-aidl-12.2.0\AndroidManifest.xml:2:1-9:12
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:2:1-41:12
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:2:1-41:12
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:2:1-41:12
+	package
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:4:5-39
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:2:1-41:12
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:2:1-41:12
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.QUERY_ALL_PACKAGES
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:6:5-77
+	android:name
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:6:22-74
+uses-permission#android.permission.WRITE_SECURE_SETTINGS
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:7:5-8:47
+	tools:ignore
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:8:9-44
+	android:name
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:7:22-77
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:9:5-77
+	android:name
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:9:22-74
+uses-sdk
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:5-122
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:5-122
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:5-122
+MERGED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:6:5-8:41
+MERGED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:6:5-8:41
+MERGED from [dev.rikka.shizuku:api:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\758c3af0adbd3cec05836aa168ce8adf\transformed\jetified-api-12.2.0\AndroidManifest.xml:5:5-7:41
+MERGED from [dev.rikka.shizuku:api:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\758c3af0adbd3cec05836aa168ce8adf\transformed\jetified-api-12.2.0\AndroidManifest.xml:5:5-7:41
+MERGED from [dev.rikka.shizuku:shared:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\c7871e676a70c0dca4c59d93d7c6d8a8\transformed\jetified-shared-12.2.0\AndroidManifest.xml:5:5-7:41
+MERGED from [dev.rikka.shizuku:shared:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\c7871e676a70c0dca4c59d93d7c6d8a8\transformed\jetified-shared-12.2.0\AndroidManifest.xml:5:5-7:41
+MERGED from [dev.rikka.shizuku:aidl:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\1b91acf7c853c92e2399f4377e8cab87\transformed\jetified-aidl-12.2.0\AndroidManifest.xml:5:5-7:41
+MERGED from [dev.rikka.shizuku:aidl:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\1b91acf7c853c92e2399f4377e8cab87\transformed\jetified-aidl-12.2.0\AndroidManifest.xml:5:5-7:41
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:5-122
+INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:5-122
+	tools:overrideLibrary
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:15-119
+	android:targetSdkVersion
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:5-122
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:5-122
+		INJECTED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml
+application
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:13:5-39:19
+MERGED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:12:5-16:19
+MERGED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:12:5-16:19
+	android:label
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:16:9-31
+	tools:ignore
+		ADDED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:12:18-69
+	android:roundIcon
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:15:9-54
+	android:icon
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:14:9-43
+	android:theme
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:17:9-58
+meta-data#hwc-theme
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:18:9-92
+	android:value
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:18:45-90
+	android:name
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:18:20-44
+activity#com.accessibilitymanager.MainActivity
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:19:9-30:20
+	android:excludeFromRecents
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:21:13-46
+	android:launchMode
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:22:13-44
+	android:exported
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:24:13-36
+	android:configChanges
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:23:13-91
+	android:name
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:20:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:25:13-29:29
+action#android.intent.action.MAIN
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:26:17-69
+	android:name
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:26:25-66
+category#android.intent.category.LAUNCHER
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:28:17-77
+	android:name
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:28:27-74
+service#com.accessibilitymanager.daemonService
+ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:31:9-73
+	android:exported
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:31:48-71
+	android:name
+		ADDED from F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:31:18-47
+uses-permission#moe.shizuku.manager.permission.API_V23
+ADDED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:10:5-78
+	android:name
+		ADDED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:10:22-75
+meta-data#moe.shizuku.client.V3_SUPPORT
+ADDED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:13:9-15:36
+	android:value
+		ADDED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:15:13-33
+	android:name
+		ADDED from [dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:14:13-57

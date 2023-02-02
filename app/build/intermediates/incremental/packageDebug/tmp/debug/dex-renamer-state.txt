@@ -1,0 +1,4 @@
+#Fri Feb 03 01:23:20 CST 2023
+base.0=F\:\\my\\programming\\Android\\Project\\AccessibilityManager\\app\\build\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

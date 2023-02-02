@@ -1,0 +1,73 @@
+{
+    "logs": [
+        {
+            "outputFile": "F:\\my\\programming\\Android\\Project\\AccessibilityManager\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
+            "map": [
+                {
+                    "source": "F:\\my\\programming\\Android\\Project\\AccessibilityManager\\app\\src\\main\\res\\values\\ic_launcher_background.xml",
+                    "from": {
+                        "startLines": "-1",
+                        "startColumns": "-1",
+                        "startOffsets": "-1"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "101",
+                        "endColumns": "57",
+                        "endOffsets": "154"
+                    }
+                },
+                {
+                    "source": "F:\\my\\programming\\Android\\Project\\AccessibilityManager\\app\\src\\main\\res\\values\\attrs.xml",
+                    "from": {
+                        "startLines": "-1",
+                        "startColumns": "-1",
+                        "startOffsets": "-1"
+                    },
+                    "to": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "45",
+                        "endOffsets": "96"
+                    }
+                },
+                {
+                    "source": "F:\\my\\programming\\Android\\Project\\AccessibilityManager\\app\\src\\main\\res\\values\\colors.xml",
+                    "from": {
+                        "startLines": "-1",
+                        "startColumns": "-1",
+                        "startOffsets": "-1"
+                    },
+                    "to": {
+                        "startLines": "4",
+                        "startColumns": "4",
+                        "startOffsets": "159",
+                        "endColumns": "35",
+                        "endOffsets": "190"
+                    }
+                },
+                {
+                    "source": "F:\\my\\programming\\Android\\Project\\AccessibilityManager\\app\\src\\main\\res\\values\\themes.xml",
+                    "from": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "59",
+                        "endLines": "5",
+                        "endColumns": "12",
+                        "endOffsets": "243"
+                    },
+                    "to": {
+                        "startLines": "5",
+                        "startColumns": "4",
+                        "startOffsets": "195",
+                        "endLines": "7",
+                        "endColumns": "12",
+                        "endOffsets": "377"
+                    }
+                }
+            ]
+        }
+    ]
+}

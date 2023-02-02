@@ -4,15 +4,18 @@
     package="com.accessibilitymanager">
 
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-sdk tools:overrideLibrary="rikka.shizuku.provider,rikka.shizuku.api,rikka.shizuku.shared,rikka.shizuku.aidl" />
 
     <application
-        android:icon="@mipmap/icon"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="无障碍管理器"
-        android:theme="@android:style/Theme.DeviceDefault">
+        android:theme="@style/Theme.AccessibilityManager">
+        <meta-data android:name="hwc-theme" android:value="androidhwext:style/Theme.Emui"/>
         <activity
             android:name=".MainActivity"
             android:excludeFromRecents="true"

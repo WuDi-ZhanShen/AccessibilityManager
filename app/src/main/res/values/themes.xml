@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.AccessibilityManager" parent="android:Theme.DeviceDefault.Light.DarkActionBar">
+        <item name="colorAccent">@android:color/holo_blue_light</item>
+    </style>
+</resources>

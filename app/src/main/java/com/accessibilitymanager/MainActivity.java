@@ -4,6 +4,7 @@ import android.Manifest;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Service;
 import android.app.UiModeManager;
 import android.content.ClipData;
@@ -31,9 +32,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -61,7 +64,7 @@ public class MainActivity extends Activity {
     ListView t;
     SharedPreferences sp;
     String settingValue, tmpsettingValue;
-    boolean night = true;
+    //boolean night = true;
     PackageManager pm;
 
     //自定义一个内容监视器
@@ -97,10 +100,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         //根据系统深色模式自动切换主题，同时存储下来深色模式的状态
-        if (((UiModeManager) getSystemService(Service.UI_MODE_SERVICE)).getNightMode() == UiModeManager.MODE_NIGHT_NO) {
+        /*if (((UiModeManager) getSystemService(Service.UI_MODE_SERVICE)).getNightMode() == UiModeManager.MODE_NIGHT_NO) {
             setTheme(android.R.style.Theme_DeviceDefault_Light);
             night = false;
-        }
+        }*/
 
         setContentView(R.layout.activity_main);
 
@@ -412,7 +415,7 @@ public class MainActivity extends Activity {
                 }
             });
             holder.sw.setChecked(settingValue.contains(Packagename[0] + "/" + Packagename[1]) || settingValue.contains(Packagename[0] + "/" + Packagename[0] + Packagename[1]));
-            holder.ib.setVisibility(holder.sw.isChecked() ? View.VISIBLE : View.INVISIBLE);
+            holder.ib.setVisibility(holder.sw.isChecked() ? View.VISIBLE : View.GONE);
             holder.sw.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -430,7 +433,7 @@ public class MainActivity extends Activity {
                             tmpsettingValue = s.replace(ServiceName + ":", "").replace(Packagename[0] + "/" + Packagename[0] + Packagename[1] + ":", "").replace(ServiceName, "").replace(Packagename[0] + "/" + Packagename[0] + Packagename[1], "").replace(ServiceName, "");
 
                         Settings.Secure.putString(mContext.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, tmpsettingValue);
-                        holder.ib.setVisibility(holder.sw.isChecked() ? View.VISIBLE : View.INVISIBLE);
+                        holder.ib.setVisibility(holder.sw.isChecked() ? View.VISIBLE : View.GONE);
 
                     }
                 }
@@ -438,7 +441,7 @@ public class MainActivity extends Activity {
 
 
             //点击某个项目的空白处将展示该服务的详细信息，下面的代码是解析各类FLAG的，挺麻烦，不过没别的方法。
-            holder.layout.setOnClickListener(new View.OnClickListener() {
+            convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -460,7 +463,8 @@ public class MainActivity extends Activity {
                     if (cap % 64 >= 32) capa += "执行手势\n";
                     if (cap % 32 >= 16) capa += "控制显示器放大率\n";
                     if (cap % 16 >= 8) capa += "监听和拦截按键事件\n";
-                    if (cap % 8 >= 4) capa += "请求增强的Web辅助功能增强功能。 例如，安装脚本以使网页内容更易于访问\n";
+                    if (cap % 8 >= 4)
+                        capa += "请求增强的Web辅助功能增强功能。 例如，安装脚本以使网页内容更易于访问\n";
                     if (cap % 4 >= 2) capa += "请求触摸探索模式，使触屏操作变成鼠标操作\n";
                     if (cap % 2 >= 1) capa += "读取屏幕内容\n";
                     if (capa.equals("")) capa = "无\n";
@@ -468,7 +472,8 @@ public class MainActivity extends Activity {
                     int eve = info.eventTypes;
                     String event = "";
                     if (eve == -1) eve = 45108863;
-                    if (eve % 22554432 >= 16777216) event += "当前正在阅读用户屏幕上下文的助理事件\n";
+                    if (eve % 22554432 >= 16777216)
+                        event += "当前正在阅读用户屏幕上下文的助理事件\n";
                     if (eve % 16777216 >= 8388608) event += "点击控件上下文的事件\n";
                     if (eve % 8388608 >= 4194304) event += "窗口更改的事件\n";
                     if (eve % 4194304 >= 2097152) event += "用户结束触摸屏幕的事件\n";
@@ -510,14 +515,15 @@ public class MainActivity extends Activity {
 
 
                     try {
-                        TextView t = new TextView(mContext);
+                        /*TextView t = new TextView(mContext);
                         t.setTextIsSelectable(true);
                         t.setPadding(40, 20, 40, 20);
                         t.setVerticalScrollBarEnabled(true);
-                        t.setTextSize(18f);
+                        t.setTextSize(16f);
                         t.setAlpha(0.8f);
                         t.setTextColor(night ? Color.WHITE : Color.BLACK);
                         t.setText(String.format("服务类名：\n%s\n\n特殊能力：\n%s\n生效范围：\n%s\n\n反馈方式：\n%s\n捕获事件类型：\n%s\n特殊标志：\n%s", ServiceName, capa, range, feedback, event, flag));
+                        */
                         if (info.getSettingsActivityName() != null && info.getSettingsActivityName().length() > 0)
                             builder.setNegativeButton("设置", new DialogInterface.OnClickListener() {
                                 @Override
@@ -531,9 +537,15 @@ public class MainActivity extends Activity {
 
                         builder
                                 .setIcon(pm.getApplicationIcon(Packagename[0]))
-                                .setView(t).setTitle("服务详细信息")
+                                //.setView(t)
+                                .setTitle("服务详细信息")
+                                .setMessage(String.format("服务类名：\n%s\n\n特殊能力：\n%s\n生效范围：\n%s\n\n反馈方式：\n%s\n捕获事件类型：\n%s\n特殊标志：\n%s", ServiceName, capa, range, feedback, event, flag))
                                 .setPositiveButton("知道了", null)
-                                .create().show();
+                                .create();
+                        Dialog dialog = builder.show();
+                        TextView textView = ((TextView) dialog.findViewById(android.R.id.message));
+                        textView.setTextSize(16f);
+                        textView.setTextIsSelectable(true);
                     } catch (Exception ignored) {
                     }
                 }
@@ -585,7 +597,7 @@ public class MainActivity extends Activity {
             TextView texta;
             TextView textb;
             ImageView imageView;
-            RelativeLayout layout;
+            LinearLayout layout;
             Switch sw;
             ImageButton ib;
         }

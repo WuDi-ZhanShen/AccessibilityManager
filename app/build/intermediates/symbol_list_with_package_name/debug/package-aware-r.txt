@@ -1,0 +1,26 @@
+com.accessibilitymanager
+attr colorAccent
+color ic_launcher_background
+color p
+drawable ic_launcher_foreground
+drawable icon
+drawable lock
+drawable lock1
+id a
+id b
+id c
+id down
+id e
+id ib
+id l
+id list
+id moren
+id s
+id up
+layout activity_main
+layout item
+menu arrange
+mipmap ic_launcher
+mipmap ic_launcher_round
+mipmap icon
+style Theme_AccessibilityManager

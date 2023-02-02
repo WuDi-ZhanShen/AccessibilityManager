@@ -1,70 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="?android:listChoiceBackgroundIndicator">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="5dp">
-
-        <ImageView
-            android:id="@+id/c"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center" />
-    </FrameLayout>
-
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/c"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_margin="8dp" />
+    <LinearLayout
         android:id="@+id/l"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="10dp"
-        android:orientation="vertical">
-
-
-        <RelativeLayout
-            android:id="@+id/e"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+        <TextView
+            android:id="@+id/b"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/b"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#ff0096ff"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <Switch
-                android:id="@+id/s"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:padding="5dp" />
-
-            <ImageButton
-                android:id="@+id/ib"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_toStartOf="@+id/s"
-                android:background="@android:color/transparent"
-                android:src="@drawable/lock"
-                android:visibility="invisible" />
-
-
-        </RelativeLayout>
-
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceListItem"
+            android:textSize="14sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/a"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/e" />
+            android:textColor="?android:textColorSecondary"/>
 
+    </LinearLayout>
 
-    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/e"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <ImageButton
+            android:id="@+id/ib"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="?android:listChoiceBackgroundIndicator"
+            android:src="@drawable/lock"
+            android:visibility="gone"
+            android:padding="6dp" />
+
+        <Switch
+            android:id="@+id/s"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp" />
+
+    </LinearLayout>
 </LinearLayout>

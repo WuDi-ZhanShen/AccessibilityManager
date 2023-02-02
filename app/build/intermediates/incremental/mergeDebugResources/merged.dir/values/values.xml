@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr format="color" name="colorAccent"/>
+    <color name="ic_launcher_background">@color/p</color>
+    <color name="p">#4759B8</color>
+    <style name="Theme.AccessibilityManager" parent="android:Theme.DeviceDefault.Light.DarkActionBar">
+        <item name="colorAccent">@android:color/holo_blue_light</item>
+    </style>
+</resources>

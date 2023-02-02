@@ -1,0 +1,99 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.accessibilitymanager"
+4    android:versionCode="5"
+5    android:versionName="5" >
+6
+7    <uses-sdk
+7-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:5-122
+8        android:minSdkVersion="18"
+8-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:5-122
+9        android:targetSdkVersion="32" />
+9-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:11:5-122
+10
+11    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+11-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:6:5-77
+11-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:6:22-74
+12    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+12-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:7:5-8:47
+12-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:7:22-77
+13    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+13-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:9:5-77
+13-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:9:22-74
+14    <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
+14-->[dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:10:5-78
+14-->[dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:10:22-75
+15
+16    <application
+16-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:13:5-39:19
+17        android:debuggable="true"
+18        android:icon="@mipmap/ic_launcher"
+18-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:14:9-43
+19        android:label="无障碍管理器"
+19-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:16:9-31
+20        android:roundIcon="@mipmap/ic_launcher_round"
+20-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:15:9-54
+21        android:testOnly="true"
+22        android:theme="@style/Theme.AccessibilityManager" >
+22-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:17:9-58
+23        <meta-data
+23-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:18:9-92
+24            android:name="hwc-theme"
+24-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:18:20-44
+25            android:value="androidhwext:style/Theme.Emui" />
+25-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:18:45-90
+26
+27        <activity
+27-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:19:9-30:20
+28            android:name="com.accessibilitymanager.MainActivity"
+28-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:20:13-41
+29            android:configChanges="keyboardHidden|smallestScreenSize|fontScale|screenSize"
+29-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:23:13-91
+30            android:excludeFromRecents="true"
+30-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:21:13-46
+31            android:exported="true"
+31-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:24:13-36
+32            android:launchMode="singleTask" >
+32-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:22:13-44
+33            <intent-filter>
+33-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:25:13-29:29
+34                <action android:name="android.intent.action.MAIN" />
+34-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:26:17-69
+34-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:26:25-66
+35
+36                <category android:name="android.intent.category.LAUNCHER" />
+36-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:28:17-77
+36-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:28:27-74
+37            </intent-filter>
+38        </activity>
+39
+40        <service
+40-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:31:9-73
+41            android:name="com.accessibilitymanager.daemonService"
+41-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:31:18-47
+42            android:exported="true" />
+42-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:31:48-71
+43
+44        <provider
+45            android:name="rikka.shizuku.ShizukuProvider"
+45-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:33:13-57
+46            android:authorities="com.accessibilitymanager.shizuku"
+46-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:34:13-59
+47            android:enabled="true"
+47-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:35:13-35
+48            android:exported="true"
+48-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:36:13-36
+49            android:multiprocess="false"
+49-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:37:13-41
+50            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+50-->F:\my\programming\Android\Project\AccessibilityManager\app\src\main\AndroidManifest.xml:38:13-79
+51
+52        <meta-data
+52-->[dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:13:9-15:36
+53            android:name="moe.shizuku.client.V3_SUPPORT"
+53-->[dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:14:13-57
+54            android:value="true" />
+54-->[dev.rikka.shizuku:provider:12.2.0] C:\Users\USER\.gradle\caches\transforms-3\e5080c58a5a86e81939707a8fc71358b\transformed\jetified-provider-12.2.0\AndroidManifest.xml:15:13-33
+55    </application>
+56
+57</manifest>
