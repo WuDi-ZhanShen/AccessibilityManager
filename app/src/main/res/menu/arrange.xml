@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/moren" android:title="默认排序" android:showAsAction="never"/>
-    <item android:id="@+id/up" android:title="汉字顺序" android:showAsAction="never"/>
-    <item android:id="@+id/down" android:title="汉字逆序" android:showAsAction="never"/>
-</menu>
