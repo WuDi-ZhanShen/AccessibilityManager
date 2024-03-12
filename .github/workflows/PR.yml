@@ -1,19 +1,17 @@
-name: Android CI
+name: Pull Request Checker
 
 on:
-  workflow_dispatch:
-  push:
+  pull_request:
     branches: [ main ]
     paths-ignore:
       - '**.md'
       - '**.txt'
       - '.github/**'
       - '!.github/workflows/**'
-      - '.idea/**'
 
 jobs:
   build:
-    name: Build CI
+    name: Pull request check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
