@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace 'com.accessibilitymanager'
-    compileSdk = 33
-    buildToolsVersion = "33.0.0"
+    compileSdk = 34
+    buildToolsVersion = "34.0.0"
     ndkVersion = "26.2.11394342"
 
     defaultConfig {
         applicationId "com.accessibilitymanager"
         minSdk 18
-        targetSdk 33
+        targetSdk 34
         versionCode 8
         versionName "8"
 
